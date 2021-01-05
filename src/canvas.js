@@ -17,7 +17,6 @@ const runIt = () => {
   stage = new createjs.Stage(canvas);
 
   createLines();
-
   buildIt();
 }
 
@@ -48,25 +47,12 @@ const buildIt = () => {
   
   stage.on('stagemousedown', event => {
     let bitmap = new createjs.Bitmap(DIRT_URL);
-    console.log('uhhhh', event);
     stage.addChild(bitmap);
-    bitmap.x = event.stageX;
-    bitmap.y = event.stageY;
+
+    bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+    bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
     update();
   });
-
-  // document.getElementById('buildingCanvas').addEventListener('click', event => {
-  //   let burb = new createjs.Bitmap(DIRT_URL);
-  //   // burb.onload = update;
-  //   console.log(event);
-  //   console.log('mouse x,y', event.offsetX, event.offsetY);
-  //   stage.addChild(burb);
-  //   burb.x = event.offsetX;
-  //   burb.y = event.offsetY;
-  //   console.log(`burbX: ${burb.x} burby: ${burb.y}`);
-  //   console.log(burb);
-  //   update();
-  // });
 }
 
 const update = event => {
