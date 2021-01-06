@@ -43,15 +43,25 @@ const createLines = () => {
 }
 
 const buildIt = () => {
+  let drawing = false;
 
-  
   stage.on('stagemousedown', event => {
-    let bitmap = new createjs.Bitmap(DIRT_URL);
-    stage.addChild(bitmap);
+    drawing = true;
+  });
 
-    bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
-    bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
-    update();
+  stage.on('stagemouseup', event => {
+    drawing = false;
+  });
+  
+  stage.on('stagemousemove', event => {
+    if(drawing) {
+      let bitmap = new createjs.Bitmap(DIRT_URL);
+      stage.addChild(bitmap);
+
+      bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+      bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+      update();
+    }
   });
 }
 
