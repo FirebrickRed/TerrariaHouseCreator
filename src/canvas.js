@@ -1,7 +1,7 @@
-const SQUARE_SIZE = 15;
-const WIDTH = 600;
-const HEIGHT = 1000;
-const DIRT_URL = "https://static.wikia.nocookie.net/terraria_gamepedia/images/5/55/Dirt_Block.png/revision/latest/scale-to-width-down/16?cb=20200516211400"
+// const SQUARE_SIZE = 15;
+import {SQUARE_SIZE, WIDTH, HEIGHT, getSelectedBlockUrl} from "./constants.js";
+// const DIRT_URL = "https://static.wikia.nocookie.net/terraria_gamepedia/images/4/44/Mud_Block.png/revision/latest/scale-to-width-down/16?cb=20200516215456";
+let blocks = [];
 let canvas, stage;
 
 const add = (firstNum, secondNum) => {
@@ -47,6 +47,7 @@ const buildIt = () => {
 
   stage.on('stagemousedown', event => {
     drawing = true;
+    placeBlock(event);
   });
 
   stage.on('stagemouseup', event => {
@@ -55,14 +56,24 @@ const buildIt = () => {
   
   stage.on('stagemousemove', event => {
     if(drawing) {
-      let bitmap = new createjs.Bitmap(DIRT_URL);
-      stage.addChild(bitmap);
-
-      bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
-      bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
-      update();
+      placeBlock(event);
     }
   });
+}
+
+const placeBlock = event => {
+  console.log('placeblock', getSelectedBlockUrl());
+  let bitmap = new createjs.Bitmap(getSelectedBlockUrl());
+  stage.addChild(bitmap);
+
+  console.log('bounds', bitmap.getBounds());
+
+  bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+  bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+  update();
+
+  blocks.push(bitmap);
+  console.log(blocks);
 }
 
 const update = event => {

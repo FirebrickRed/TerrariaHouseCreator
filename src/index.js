@@ -1,4 +1,6 @@
 import "./styles/index.scss";
 import "./canvas";
-import "./demo";
+import "./blockSelection";
 import "./backgroundChange";
+import "./demo";
+import "./hitdemo";
