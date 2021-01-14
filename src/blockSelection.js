@@ -3,7 +3,6 @@ import { BLOCKS, setSelectedBlockUrl } from "./constants";
 const blockSelection = () => {
   
   BLOCKS.forEach(block => {
-    console.log(block);
     let input = document.createElement('input');
     input.setAttribute('type', 'radio');
     input.setAttribute('name', 'block');
@@ -13,9 +12,7 @@ const blockSelection = () => {
     }
     input.addEventListener('click', event => {
       setSelectedBlockUrl(block.url);
-      console.log('click!');
     });
-    console.log('button', input);
 
     let label = document.createElement('label');
     label.innerHTML = block.blockName;

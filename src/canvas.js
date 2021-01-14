@@ -1,7 +1,5 @@
 // const SQUARE_SIZE = 15;
 import {SQUARE_SIZE, WIDTH, HEIGHT, getSelectedBlockUrl} from "./constants.js";
-// const DIRT_URL = "https://static.wikia.nocookie.net/terraria_gamepedia/images/4/44/Mud_Block.png/revision/latest/scale-to-width-down/16?cb=20200516215456";
-let blocks = [];
 let canvas, stage;
 
 const add = (firstNum, secondNum) => {
@@ -21,7 +19,6 @@ const runIt = () => {
 }
 
 const createLines = () => {
-  console.log('Creating Lines');
   let line = new createjs.Shape();
   stage.addChild(line);
 
@@ -43,11 +40,16 @@ const createLines = () => {
 }
 
 const buildIt = () => {
+  createjs.Touch.enable(stage);
   let drawing = false;
 
   stage.on('stagemousedown', event => {
+    let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+
     drawing = true;
-    placeBlock(event);
+    if(!obj){
+      placeBlock(event);
+    }
   });
 
   stage.on('stagemouseup', event => {
@@ -56,24 +58,32 @@ const buildIt = () => {
   
   stage.on('stagemousemove', event => {
     if(drawing) {
-      placeBlock(event);
+      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+      if(obj === null) {
+        placeBlock(event);
+      }
     }
   });
 }
 
 const placeBlock = event => {
-  console.log('placeblock', getSelectedBlockUrl());
-  let bitmap = new createjs.Bitmap(getSelectedBlockUrl());
-  stage.addChild(bitmap);
 
-  console.log('bounds', bitmap.getBounds());
+  let image = new Image();
 
-  bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
-  bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
-  update();
+  image.onload = function() {
+    let bitmap = new createjs.Bitmap(image);
 
-  blocks.push(bitmap);
-  console.log(blocks);
+    bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+    bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+
+    bitmap.scaleX = 15/image.width;
+    bitmap.scaleY = 15/image.height;
+
+    stage.addChild(bitmap);
+    update();
+  }
+
+  image.src = getSelectedBlockUrl();
 }
 
 const update = event => {
@@ -81,7 +91,6 @@ const update = event => {
 }
 
 if(document.getElementById('buildingCanvas')) {
-  console.log('running building canvas script');
   runIt();
 }
 

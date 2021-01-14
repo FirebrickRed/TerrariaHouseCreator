@@ -31,16 +31,13 @@ const DUNGEON_URL = '';
 
 //Creates radio buttons for background image
 const createInputs = () => {
-  console.log('BC: creating inputs');
   let biomes = ['forest', 'underground', 'cavern'];
   let buttons = '';
 
   for(let i = 0; i < biomes.length; i++) {
-    console.log(`BC: creating button for ${biomes[i]}`);
     buttons += `<input type="radio" name="biome" value="${biomes[i]}" /> <label>${biomes[i]}</label>`;
   }
 
-  console.log('BC: button creation finished');
   return buttons;
 }
 
@@ -48,10 +45,8 @@ const createInputs = () => {
 const addListenerToRadio = () => {
   let radio = document.getElementsByName('biome');
 
-  console.log('BC: Adding Event Listener');
   for(let i = 0; i < radio.length; i++) {
     radio[i].addEventListener('change', (event) => {
-      console.log('BC: probably better tbh', event.target.value);
       let url = '';
 
       switch(event.target.value.toLowerCase()) {
@@ -83,6 +78,5 @@ const changeButtons = () => {
 
 // If the backgroundChange element is present, create buttons
 if(document.getElementById('backgroundChange')) {
-  console.log('BC: Running Script');
   changeButtons();
 }
