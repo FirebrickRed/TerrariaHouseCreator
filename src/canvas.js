@@ -1,4 +1,3 @@
-// const SQUARE_SIZE = 15;
 import {SQUARE_SIZE, WIDTH, HEIGHT, getSelectedBlockUrl} from "./constants.js";
 let canvas, stage;
 
@@ -42,14 +41,10 @@ const createLines = () => {
 const buildIt = () => {
   createjs.Touch.enable(stage);
   let drawing = false;
-
+  
   stage.on('stagemousedown', event => {
-    let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
-
     drawing = true;
-    if(!obj){
-      placeBlock(event);
-    }
+    clickEvent(event);
   });
 
   stage.on('stagemouseup', event => {
@@ -58,12 +53,23 @@ const buildIt = () => {
   
   stage.on('stagemousemove', event => {
     if(drawing) {
-      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
-      if(obj === null) {
-        placeBlock(event);
-      }
+      clickEvent(event);
     }
   });
+}
+
+const clickEvent = event => {
+  let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+  let isRemovingBlock = getSelectedBlockUrl() == 'remove';
+  
+  if(!obj && !isRemovingBlock){
+    placeBlock(event);
+  } else if(obj !== null && isRemovingBlock) {
+    if(!obj.graphics){
+      stage.removeChild(obj);
+    }
+    update();
+  }
 }
 
 const placeBlock = event => {

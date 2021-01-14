@@ -20,6 +20,10 @@ const BLOCKS = [
   {
     blockName: "Wood",
     url: './assets/wood.png'
+  },
+  {
+    blockName: "Remove",
+    url: 'remove'
   }
 ];
 
