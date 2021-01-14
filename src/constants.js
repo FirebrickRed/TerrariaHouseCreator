@@ -11,12 +11,11 @@ const SQUARE_SIZE = 15;
 const BLOCKS = [
   {
     blockName: "Dirt",
-    url: './assets/Bird.png'
-    // url: "https://static.wikia.nocookie.net/terraria_gamepedia/images/5/55/Dirt_Block.png/revision/latest/scale-to-width-down/16?cb=20200516211400",
+    url: './assets/dirt.png'
   },
   {
     blockName: "Mud",
-    url: "https://static.wikia.nocookie.net/terraria_gamepedia/images/4/44/Mud_Block.png/revision/latest/scale-to-width-down/16?cb=20200516215456",
+    url: "./assets/mud.png"
   },
   {
     blockName: "Wood",
