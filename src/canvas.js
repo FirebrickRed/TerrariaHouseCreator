@@ -38,22 +38,49 @@ const createLines = () => {
   stage.update();
 }
 
+/*
+  Could treat it like MSPaint does for lines, and keep track of the start position on mouse click, then draw the line upon release
+
+  fun part about click n drag stuff is that once impl'd for a line you can also turn that into other shapes pretty fast - terrarria would likely only need line + box at most but circle/oval might also be cool later
+*/
+
 const buildIt = () => {
   createjs.Touch.enable(stage);
   let drawing = false;
   
+  let hoverImage = new Image();
+  let hoverBitmap = new createjs.Bitmap(hoverImage);
+  
+  hoverImage.onload = function() {
+    // Makes hovered block transparent
+    hoverBitmap.alpha = 0.5;
+    hoverBitmap.scaleX = SQUARE_SIZE/hoverImage.width;
+    hoverBitmap.scaleY = SQUARE_SIZE/hoverImage.height;
+
+    stage.addChild(hoverBitmap);
+    update();
+  }
+  hoverImage.src = getSelectedBlockUrl();
+  
   stage.on('stagemousedown', event => {
     drawing = true;
+    hoverBitmap.visible = false;
     clickEvent(event);
   });
 
   stage.on('stagemouseup', event => {
     drawing = false;
+    hoverBitmap.visible = true;
   });
   
   stage.on('stagemousemove', event => {
     if(drawing) {
       clickEvent(event);
+    } else {
+      //move hover block
+      hoverBitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+      hoverBitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+      stage.update();
     }
   });
 }
@@ -82,8 +109,8 @@ const placeBlock = event => {
     bitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
     bitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
 
-    bitmap.scaleX = 15/image.width;
-    bitmap.scaleY = 15/image.height;
+    bitmap.scaleX = SQUARE_SIZE/image.width;
+    bitmap.scaleY = SQUARE_SIZE/image.height;
 
     stage.addChild(bitmap);
     update();
