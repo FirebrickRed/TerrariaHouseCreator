@@ -37,10 +37,25 @@ export function setSelectedBlockUrl(url) {
 
 
 //background images
+const BACKGROUND = [
+  {
+    name: 'Forest',
+    url: 'https://static.wikia.nocookie.net/terraria_gamepedia/images/b/b5/Forest_background_2.png/revision/latest/scale-to-width-down/170?cb=20200816173532'
+  }, 
+  {
+    name: 'Underground',
+    url: 'https://static.wikia.nocookie.net/terraria_gamepedia/images/a/a7/Underground_background_2.png/revision/latest/scale-to-width-down/120?cb=20200821140126'
+  },
+  {
+    name: 'Cavern',
+    url: 'https://static.wikia.nocookie.net/terraria_gamepedia/images/b/bf/Cavern_background_2.png/revision/latest/scale-to-width-down/120?cb=20200821141038'
+  }
+]
 
 export { 
   SQUARE_SIZE, 
   WIDTH, 
   HEIGHT, 
-  BLOCKS
+  BLOCKS,
+  BACKGROUND
 };

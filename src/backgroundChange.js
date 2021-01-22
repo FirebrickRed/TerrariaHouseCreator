@@ -1,82 +1,57 @@
-//#region Image Url
+import { BACKGROUND } from "./constants";
 
-// Should probably change this to the gampedia wiki images
-
-// if you need more images here is the url where I got these
-// https://steamcommunity.com/sharedfiles/filedetails/?id=841032800
-const FOREST_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096568452/AC74F597B6163FF1A205145369D8927274EB9583/';
-const UNDERGROUND_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096823618/552388934A0A2556A3916D10836699E1746E908B/';
-const CAVERN_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096825086/AB6921502542E8F3BF08C4E69365F567477A86AC/';
-const UNDERWORLD_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096780792/26BCD2835D53795622F65899570A7EED8F5AC8FC/';
-const SPACE_URL = '';
-const SNOW_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096632551/635132DF725A977B6DB16702F351A8E61E1CB7C2/';
-const ICE_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096751192/9FE4E2718427CE3241D4AEC8AF88DA0C578D9E96/';
-const DESERT_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096676921/2A12C6A3429E82BC06724F25C4F5CF25B6A9699F/';
-const UNDERGROUND_DESERT_URL = '';
-const OCEAN_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096704787/0C8AAFB2952ED23BB8298884BA4C5086FF904A76/';
-const JUNGLE_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096601917/A67941940A2A2A77A932FF74B1B541FE5391D413/';
-const UNDERGROUND_JUNGLE_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096756223/A82529897139504E4FA13D015ECBB9839DB1686E/';
-const TEMPLE_JUNGLE_URL = '';
-const MUSHROOM_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096612049/D1FD47D506217833CD6B4C3F033D4D980085DE61/';
-const CORRUPTION_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096598413/229B4B72BA00D5585036AD8382874A078CA08E84/';
-const UNDERGROUND_CORRUPTION_URL = 'https://steamuserimages-a.akamaihd.net/ugc/779622891021434496/2D26F298E08E0FF5858D9D1DA465053A972B8C8D/';
-const CRIMSION_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096695248/0032DA056803853336CD163FF0D3ECE62E5304E8/';
-const UNDERGROUND_CRIMSION_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096774944/A817ABBCD87CB06FD25099BA7736F036BB6DF92B/';
-const HALLOW_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056096710901/D0D487CEC5F8FB36CA38A131BD6404193D1E924A/';
-const UNDERGROUND_HALLOW_URL = 'https://steamuserimages-a.akamaihd.net/ugc/100603056100222064/9BDFB74D7EA8E7BAEBBA1247E08FC5CAC12905EB/';
-const DUNGEON_URL = '';
-
-//#endregion
-
-
-//Creates radio buttons for background image
-const createInputs = () => {
-  let biomes = ['forest', 'underground', 'cavern'];
-  let buttons = '';
-
-  for(let i = 0; i < biomes.length; i++) {
-    buttons += `<input type="radio" name="biome" value="${biomes[i]}" /> <label>${biomes[i]}</label>`;
-  }
-
-  return buttons;
-}
-
-//Adds Event Listener to Radio Buttons
-const addListenerToRadio = () => {
-  let radio = document.getElementsByName('biome');
-
-  for(let i = 0; i < radio.length; i++) {
-    radio[i].addEventListener('change', (event) => {
-      let url = '';
-
-      switch(event.target.value.toLowerCase()) {
-        case 'forest':
-          url = FOREST_URL;
-          break;
-        case 'underground':
-          url = UNDERGROUND_URL;
-          break;
-        case 'cavern':
-          url = CAVERN_URL;
-          break;
-      }
-
-      document.getElementById('buildingCanvas').style.background = `url(${url})`;
-
-      // document.getElementById('buildingCanvas').style.backgroundSize = 'cover';
+const changeBackground = () => {
+  BACKGROUND.forEach(background => {
+    let input = document.createElement('input');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('name', 'background');
+    input.setAttribute('value', background.name.toLowerCase());
+    input.addEventListener('click', event => {
+      console.log('click');
+      document.getElementById('buildingCanvas').style.backgroundColor = 'unset';
+      document.getElementById('buildingCanvas').style.backgroundImage = `url(${background.url})`;
+      document.getElementById('buildingCanvas').style.backgroundSize = 'cover';
     });
-  }
+
+    let label = document.createElement('label');
+    label.innerHTML = background.name;
+
+    document.getElementById('backgroundChange').appendChild(input);
+    document.getElementById('backgroundChange').appendChild(label);
+  });
 }
 
-// adds to the div labed backgroundChange
-const changeButtons = () => {
-  let div = document.getElementById('backgroundChange');
+const colorChanger = () => {
+  let input = document.createElement('input');
+  input.setAttribute('type', 'radio');
+  input.setAttribute('name', 'background');
+  input.setAttribute('value', 'custom');
 
-  div.innerHTML = createInputs();
-  addListenerToRadio();
+  let secondInput = document.createElement('input');
+  secondInput.setAttribute('type', 'text');
+  secondInput.setAttribute('name', 'colorChanger');
+  secondInput.value = '#ffffff';
+  secondInput.addEventListener('keyup', event => {
+    console.log('in event change thing', secondInput.value);
+    document.getElementById('buildingCanvas').style.backgroundColor = secondInput.value;
+    document.getElementById('buildingCanvas').style.backgroundImage = 'unset';
+    input.checked = true;
+  });
+
+  
+  input.addEventListener('click', event => {
+    document.getElementById('buildingCanvas').style.backgroundColor = secondInput.value;
+    document.getElementById('buildingCanvas').style.backgroundImage = 'unset';
+    console.log('clicked');
+  });
+  input.checked = true;
+
+  document.getElementById('backgroundChange').appendChild(input);
+  document.getElementById('backgroundChange').appendChild(secondInput);
 }
 
 // If the backgroundChange element is present, create buttons
 if(document.getElementById('backgroundChange')) {
-  changeButtons();
+  colorChanger();
+  changeBackground();
 }
