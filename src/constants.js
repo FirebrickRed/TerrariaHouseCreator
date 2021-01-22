@@ -18,6 +18,18 @@ const BLOCKS = [
     url: "./assets/mud.png"
   },
   {
+    blockName: "Clay",
+    url: "./assets/clay.png"
+  },
+  {
+    blockName: "Ash",
+    url: "./assets/ash.png"
+  },
+  {
+    blockName: "Silt",
+    url: "./assets/silt.png"
+  },
+  {
     blockName: "Wood",
     url: './assets/wood.png'
   },
