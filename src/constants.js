@@ -64,10 +64,68 @@ const BACKGROUND = [
   }
 ]
 
+
+//Tools
+const TOOLS = [
+  {
+    id: 0,
+    name: 'Free Draw',
+    drawing: false, 
+    mouseDown: function(stage, hoverBitmap, event) {
+      this.drawing = true;
+      hoverBitmap.visible = false;
+      this.clickEvent(stage, event);
+    },
+    mouseUp: function(hoverBitmap) {
+      this.drawing = false;
+      hoverBitmap.visible = true;
+    },
+    mouseMove: function(stage, hoverBitmap, event) {
+      if(this.drawing) {
+        this.clickEvent(stage, event);
+      } else {
+        // move hover block
+        hoverBitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+        hoverBitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+        stage.update(event);
+      }
+    },
+    clickEvent: function(stage, event) {
+      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+      if(!obj) {
+        console.log('click');
+        let image = new Image();
+        image.onload = () => {
+          let bitmap = new createjs.Bitmap(image);
+          bitmap.x = Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE;
+          bitmap.y = Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE;
+          bitmap.scaleX = SQUARE_SIZE/image.width;
+          bitmap.scaleY = SQUARE_SIZE/image.height;
+          stage.addChild(bitmap);
+          stage.update(event);
+        }
+        image.src = getSelectedBlockUrl();
+      }
+    }
+  }, {
+    id: 1,
+    name: 'Line'
+  }
+];
+
+let selectedTool = TOOLS[0];
+export function getSelectedTool() {
+  return selectedTool;
+}
+export function setSelectedTool(tool) {
+  selectedTool = tool;
+}
+
 export { 
   SQUARE_SIZE, 
   WIDTH, 
   HEIGHT, 
   BLOCKS,
-  BACKGROUND
+  BACKGROUND,
+  TOOLS
 };
