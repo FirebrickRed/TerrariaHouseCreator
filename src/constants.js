@@ -32,10 +32,6 @@ const BLOCKS = [
   {
     blockName: "Wood",
     url: './assets/wood.png'
-  },
-  {
-    blockName: "Remove",
-    url: 'remove'
   }
 ];
 
@@ -93,7 +89,6 @@ const TOOLS = [
     clickEvent: function(stage, event) {
       let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
       if(!obj) {
-        console.log('click');
         let image = new Image();
         image.onload = () => {
           let bitmap = new createjs.Bitmap(image);
@@ -109,7 +104,38 @@ const TOOLS = [
     }
   }, {
     id: 1,
-    name: 'Line'
+    name: 'Remove',
+    drawing: false,
+    mouseDown: function(stage, hoverBitmap, event) {
+      this.drawing = true;
+      hoverBitmap.visible = false;
+      
+      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+      if(obj){
+        if(!obj.graphics) {
+          stage.removeChild(obj);
+        }
+      }
+      stage.update(event);
+    },
+    mouseUp: function(hoverBitmap) {
+      this.drawing = false;
+      hoverBitmap.visible = true;
+    },
+    mouseMove: function(stage, hoverBitmap, event) {
+      if(this.drawing) {
+        let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
+        if(obj){
+          if(!obj.graphics) {
+            stage.removeChild(obj);
+          }
+        }
+      } else {
+        hoverBitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+        hoverBitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+      }
+      stage.update(event);
+    }
   }
 ];
 
