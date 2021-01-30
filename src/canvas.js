@@ -61,6 +61,7 @@ const buildIt = () => {
 
   stage.on('stagemousedown', event => {
     getSelectedTool().mouseDown(stage, hoverBitmap, event);
+    stage.update(event);
   });
 
   stage.on('stagemouseup', event => {
@@ -68,7 +69,14 @@ const buildIt = () => {
   });
   
   stage.on('stagemousemove', event => {
-    getSelectedTool().mouseMove(stage, hoverBitmap, event);
+    if(getSelectedTool().drawing){
+      getSelectedTool().mouseMove(stage, hoverBitmap, event);
+    } else { 
+      // move hover block
+      hoverBitmap.x = Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE;
+      hoverBitmap.y = Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE;
+    }
+    stage.update(event);
   });
 }
 
