@@ -164,7 +164,6 @@ const TOOLS = [
         let startingX = this.lastClick[0] < point2[0] ? this.lastClick[0] : point2[0];
         let endingX = this.lastClick[0] > point2[0] ? this.lastClick[0] : point2[0];
         for(let i = startingX; i <= endingX; i += SQUARE_SIZE) {
-          console.log('points: ', i, point2[1]);
           this.placeBlock(stage, event, i, point2[1]);
           this.placeBlock(stage, event, i, this.lastClick[1]);
         }
