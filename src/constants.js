@@ -65,146 +65,196 @@ const BACKGROUND = [
 const TOOLS = [
   {
     name: 'Free Draw',
-    drawing: false, 
-    mouseDown: function(stage, hoverBitmap, event) {
-      this.drawing = true;
-      hoverBitmap.visible = false;
-      this.clickEvent(stage, event);
-    },
-    mouseUp: function(hoverBitmap) {
-      this.drawing = false;
-      hoverBitmap.visible = true;
-    },
-    mouseMove: function(stage, hoverBitmap, event) {
-      this.clickEvent(stage, event);
-    },
-    clickEvent: function(stage, event) {
-      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
-      if(!obj) {
-        let image = new Image();
-        image.onload = () => {
-          let bitmap = new createjs.Bitmap(image);
-          bitmap.x = Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE;
-          bitmap.y = Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE;
-          bitmap.scaleX = SQUARE_SIZE/image.width;
-          bitmap.scaleY = SQUARE_SIZE/image.height;
-          stage.addChild(bitmap);
-          stage.update(event);
-        }
-        image.src = getSelectedBlockUrl();
-      }
-    }
-  }, {
-    name: 'Remove',
     drawing: false,
-    mouseDown: function(stage, hoverBitmap, event) {
+    mouseDown: function(event, grid) {
       this.drawing = true;
-      hoverBitmap.visible = false;
+      let gridX = Math.floor(event.stageX/SQUARE_SIZE);
+      let gridY = Math.floor(event.stageY/SQUARE_SIZE);
       
-      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
-      if(obj){
-        if(!obj.graphics) {
-          stage.removeChild(obj);
-        }
-      }
-      stage.update(event);
+      grid[gridX][gridY].image.src = getSelectedBlockUrl();
     },
-    mouseUp: function(hoverBitmap) {
+    mouseUp: function() {
       this.drawing = false;
-      hoverBitmap.visible = true;
     },
-    mouseMove: function(stage, hoverBitmap, event) {
-      let obj = stage.getObjectUnderPoint(event.stageX, event.stageY);
-      if(obj){
-        if(!obj.graphics) {
-          stage.removeChild(obj);
-        }
-      }
+    mouseMove: function(event, grid) {
+      let gridX = Math.floor(event.stageX/SQUARE_SIZE);
+      let gridY = Math.floor(event.stageY/SQUARE_SIZE);
+
+      grid[gridX][gridY].image.src = getSelectedBlockUrl();
     }
   }, {
-    name: 'Line',
+    name: "Remove",
     drawing: false,
-    lastClick: [0,0],
-    mouseDown: function(stage, hoverBitmap, event) {
-      console.log('click', event.stageX/SQUARE_SIZE);
+    mouseDown: function(event, grid) {
+      this.drawing = true;
+      let gridX = Math.floor(event.stageX/SQUARE_SIZE);
+      let gridY = Math.floor(event.stageY/SQUARE_SIZE);
 
-      if(this.drawing) {
-        let point2 = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE + (SQUARE_SIZE/2), Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2)]
-        let slope = (point2[1]-this.lastClick[1])/(point2[0]-this.lastClick[0]);
-        console.log('in if', this.lastClick, point2, slope);
-        
-        let line = new createjs.Shape();
-        stage.addChild(line);
-        line.graphics.setStrokeStyle(3).beginStroke('green');
-        line.graphics.moveTo(this.lastClick[0], this.lastClick[1]);
-        line.graphics.lineTo(point2[0], point2[1]);
-      }
+      grid[gridX][gridY].image.src = "./assets/blank.png";
+    },
+    mouseUp: function() {
+      this.drawing = false;
+    }, 
+    mouseMove: function(event, grid) {
+      let gridX = Math.floor(event.stageX/SQUARE_SIZE);
+      let gridY = Math.floor(event.stageY/SQUARE_SIZE);
 
-      this.drawing = !this.drawing;
-      this.lastClick = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2), Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2)];
-    },
-    mouseUp: function(hoverBitmap) {
-    },
-    mouseMove: function(stage, hoverBitmap, event) {
-      // if(this.drawing) {
-      //   let point2 = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE]
-      //   let slope = (point2[1]-this.lastClick[1])/(point2[0]-this.lastClick[0]);
-      //   console.log('moving:', this.lastClick, point2, slope);
-      // }
+      grid[gridX][gridY].image.src = "./assets/blank.png";
     }
   }, {
-    name: 'Rectangle',
+    name: "Rectangle",
     drawing: false,
     lastClick: [0,0],
-    mouseDown: function(stage, hoverBitmap, event) {
+    mouseDown: function(event, grid) {
       if(this.drawing) {
-        hoverBitmap.visible = false;
-        let point2 = [Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE];
-
+        let point2 = [Math.floor(event.stageX/SQUARE_SIZE), Math.floor(event.stageY/SQUARE_SIZE)];
         let startingX = this.lastClick[0] < point2[0] ? this.lastClick[0] : point2[0];
         let endingX = this.lastClick[0] > point2[0] ? this.lastClick[0] : point2[0];
-        for(let i = startingX; i <= endingX; i += SQUARE_SIZE) {
-          this.placeBlock(stage, event, i, point2[1]);
-          this.placeBlock(stage, event, i, this.lastClick[1]);
-        }
-        
         let startingY = this.lastClick[1] < point2[1] ? this.lastClick[1] : point2[1];
         let endingY = this.lastClick[1] > point2[1] ? this.lastClick[1] : point2[1];
-        for(let i = startingY; i <= endingY; i += SQUARE_SIZE) {
-          this.placeBlock(stage, event, point2[0], i);
-          this.placeBlock(stage, event, this.lastClick[0], i);
+        console.log(`LastClick: ${this.lastClick} point2: ${point2} startingX: ${startingX} endingX: ${endingX} startingY: ${startingY} endingX: ${endingY}`);
+
+        for(let i = startingX; i <= endingX; i++) {
+          grid[i][point2[1]].image.src = getSelectedBlockUrl();
+          grid[i][this.lastClick[1]].image.src = getSelectedBlockUrl();
+        }
+        for(let i = startingY; i <= endingY; i++) {
+          grid[point2[0]][i].image.src = getSelectedBlockUrl();
+          grid[this.lastClick[0]][i].image.src = getSelectedBlockUrl();
         }
       }
-      hoverBitmap.visible = true;
 
       this.drawing = !this.drawing;
-      this.lastClick = [Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE];
+      this.lastClick = [Math.floor(event.stageX/SQUARE_SIZE), Math.floor(event.stageY/SQUARE_SIZE)];
     },
-    mouseUp: function(hoverBitmap) {
+    mouseUp: function() {
 
     },
-    mouseMove: function(stage, hoverBitmap, event) {
+    mouseMove: function() {
 
-    },
-    placeBlock: function(stage, event, x, y) {
-      let obj = stage.getObjectUnderPoint(x, y);
-      if(obj) {
-        if(obj.graphics){
-          let image = new Image();
-          image.onload = () => {
-            let bitmap = new createjs.Bitmap(image);
-            bitmap.x = x;
-            bitmap.y = y;
-            bitmap.scaleX = SQUARE_SIZE/image.width;
-            bitmap.scaleY = SQUARE_SIZE/image.height;
-            stage.addChild(bitmap);
-            stage.update(event);
-          }
-          image.src = getSelectedBlockUrl();
-        }
-      }
     }
   }
+  // }, {
+  //   name: 'Line',
+  //   drawing: false,
+  //   lastClick: [0,0],
+  //   mouseDown: function(stage, hoverBitmap, event) {
+  //     console.log('click', event.stageX/SQUARE_SIZE);
+
+  //     if(this.drawing) {
+  //       let point2 = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE + (SQUARE_SIZE/2), Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2)]
+  //       let slope = (point2[1]-this.lastClick[1])/(point2[0]-this.lastClick[0]);
+  //       console.log('in if', this.lastClick, point2, slope);
+        
+  //       let line = new createjs.Shape();
+  //       stage.addChild(line);
+  //       line.graphics.setStrokeStyle(3).beginStroke('green');
+  //       line.graphics.moveTo(this.lastClick[0], this.lastClick[1]);
+  //       line.graphics.lineTo(point2[0], point2[1]);
+  //     }
+
+  //     this.drawing = !this.drawing;
+  //     this.lastClick = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2), Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE+(SQUARE_SIZE/2)];
+  //   },
+  //   mouseUp: function(hoverBitmap) {
+  //   },
+  //   mouseMove: function(stage, hoverBitmap, event) {
+  //     // if(this.drawing) {
+  //     //   let point2 = [Math.floor(event.stageX/SQUARE_SIZE) * SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE) * SQUARE_SIZE]
+  //     //   let slope = (point2[1]-this.lastClick[1])/(point2[0]-this.lastClick[0]);
+  //     //   console.log('moving:', this.lastClick, point2, slope);
+  //     // }
+  //   }
+  // }, {
+  //   name: 'Rectangle',
+  //   drawing: false,
+  //   lastClick: [0,0],
+  //   mouseDown: function(stage, hoverBitmap, event) {
+  //     if(this.drawing) {
+  //       hoverBitmap.visible = false;
+  //       let point2 = [Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE];
+
+  //       let startingX = this.lastClick[0] < point2[0] ? this.lastClick[0] : point2[0];
+  //       let endingX = this.lastClick[0] > point2[0] ? this.lastClick[0] : point2[0];
+  //       for(let i = startingX; i <= endingX; i += SQUARE_SIZE) {
+  //         this.placeBlock(stage, event, i, point2[1], false);
+  //         this.placeBlock(stage, event, i, this.lastClick[1], false);
+  //       }
+        
+  //       let startingY = this.lastClick[1] < point2[1] ? this.lastClick[1] : point2[1];
+  //       let endingY = this.lastClick[1] > point2[1] ? this.lastClick[1] : point2[1];
+  //       for(let i = startingY; i < endingY; i += SQUARE_SIZE) {
+  //         this.placeBlock(stage, event, point2[0], i, false);
+  //         this.placeBlock(stage, event, this.lastClick[0], i, false);
+  //       }
+  //     }
+  //     hoverBitmap.visible = true;
+
+  //     this.drawing = !this.drawing;
+  //     this.lastClick = [Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE];
+  //   },
+  //   mouseUp: function(hoverBitmap) {
+
+  //   },
+  //   mouseMove: function(stage, hoverBitmap, event) {
+  //     // if(this.drawing) {
+
+  //     //   hoverBitmap.visible = false;
+  //     //   let point2 = [Math.floor(event.stageX/SQUARE_SIZE)*SQUARE_SIZE, Math.floor(event.stageY/SQUARE_SIZE)*SQUARE_SIZE];
+  //     //   let startingX = this.lastClick[0] < point2[0] ? this.lastClick[0] : point2[0];
+  //     //   let endingX = this.lastClick[0] > point2[0] ? this.lastClick[0] : point2[0];
+  //     //   let startingY = this.lastClick[1] < point2[1] ? this.lastClick[1] : point2[1];
+  //     //   let endingY = this.lastClick[1] > point2[1] ? this.lastClick[1] : point2[1];
+
+  //     //   for(let i = startingX; i < endingX; i += SQUARE_SIZE) {
+  //     //     let obj = stage.getObjectUnderPoint(i, point2[1]);
+  //     //     if(obj) {
+  //     //       if(!obj.graphics) {
+  //     //         stage.removeChild(obj);
+  //     //       }
+  //     //     }
+  //     //   }
+  //     //   for(let i = startingY; i < endingY; i += SQUARE_SIZE) {
+  //     //     let obj = stage.getObjectUnderPoint(point2[0], i);
+  //     //     if(obj) {
+  //     //       if(!obj.graphics) {
+  //     //         stage.removeChild(obj);
+  //     //       }
+  //     //     }
+  //     //   }
+
+  //     //   for(let i = startingX; i < endingX; i += SQUARE_SIZE) {
+  //     //     this.placeBlock(stage, event, i, point2[1], true);
+  //     //     this.placeBlock(stage, event, i, this.lastClick[1], true);
+  //     //   }
+  //     //   for(let i = startingY; i < endingY; i += SQUARE_SIZE) {
+  //     //     this.placeBlock(stage, event, point2[0], i, true);
+  //     //     this.placeBlock(stage, event, this.lastClick[0], i, true);
+  //     //   }
+  //     // }
+  //   },
+  //   placeBlock: function(stage, event, x, y, isHover) {
+  //     let obj = stage.getObjectUnderPoint(x, y);
+  //     if(obj) {
+  //       if(obj.graphics){
+  //         let image = new Image();
+  //         image.onload = () => {
+  //           let bitmap = new createjs.Bitmap(image);
+  //           if(isHover) {
+  //             bitmap.alpha = 0.5;
+  //           }
+  //           bitmap.x = x;
+  //           bitmap.y = y;
+  //           bitmap.scaleX = SQUARE_SIZE/image.width;
+  //           bitmap.scaleY = SQUARE_SIZE/image.height;
+  //           stage.addChild(bitmap);
+  //           stage.update(event);
+  //         }
+  //         image.src = getSelectedBlockUrl();
+  //       }
+  //     }
+  //   }
+  // }
 ];
 
 let selectedTool = TOOLS[0];

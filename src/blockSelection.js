@@ -1,5 +1,4 @@
 import { BLOCKS, setSelectedBlockUrl } from "./constants";
-import { updateHoverImage } from "./canvas";
 
 const blockSelection = () => {
   
@@ -13,7 +12,6 @@ const blockSelection = () => {
     }
     input.addEventListener('click', event => {
       setSelectedBlockUrl(block.url);
-      updateHoverImage();
     });
 
     let label = document.createElement('label');
